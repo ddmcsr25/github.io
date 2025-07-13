@@ -71,17 +71,6 @@ Google acknowledged the issue and provided a monetary reward. However, the final
 
 ---
 
-## About the Researcher
-
-My name is Derek Morris. I am a cybersecurity researcher specializing in mobile device security, Android systems, and responsible vulnerability disclosure.
-
-This disclosure demonstrates how some attack vectors remain viable even with common protections in place. My intent is to bring attention to these edge-case bypasses and encourage deeper review of how sideloaded OTA images are handled during device recovery.
-
-- GitHub: [https://github.com/yourusername](https://github.com/yourusername)
-- LinkedIn: [https://linkedin.com/in/yourname](https://linkedin.com/in/yourname)
-
----
-
 ## Disclosure Notes
 
 - This issue was reported to Google through their official Android Security Rewards process.
