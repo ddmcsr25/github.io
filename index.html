@@ -1,84 +1,119 @@
-# Android 14 FRP & Lock Screen Bypass (Pixel 6)
-<meta name="google-site-verification" content="PVTG5kf30tQHCJNu7FBNt4LUJlR5F6Rb_dYRvtbHYHk" />
-**Author:** Derek Morris  
-**Location:** Merced, California  
-**Role:** Security Analyst & Ethical Hacker  
-**Date Reported:** July 2024  
-**Disclosure Type:** Responsible Disclosure  
-**Issue Tracker ID:** 352333773  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
----
+  <meta name="description" content="Pixel 6 (Android 14) Factory Reset Protection (FRP) security research and responsible disclosure by Derek Morris. Public attribution page with issue reference, impact, and mitigations (no bypass steps).">
+  <meta name="keywords" content="Factory Reset Protection FRP security research, Pixel 6 security analysis, Android FRP threat model, responsible disclosure, Android & Devices VRP, issue 352333773, Derek Morris">
+  <meta name="author" content="Derek Morris">
+  <title>Pixel 6 FRP Security Research — Derek Morris (Issue 352333773)</title>
 
-## Summary
+  <link rel="canonical" href="https://ddmcsr25.github.io/">
 
-This research documents a critical vulnerability that allows attackers to bypass Factory Reset Protection (FRP) and the user lock screen on the Pixel 6 running Android 14, even when:
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Pixel 6 FRP Security Research — Responsible Disclosure (Issue 352333773)",
+    "author": { "@type": "Person", "name": "Derek Morris" },
+    "datePublished": "2024-07-10",
+    "publisher": { "@type": "Organization", "name": "ddmcsr25.github.io", "url": "https://ddmcsr25.github.io" },
+    "description": "Security research and responsible disclosure summary for Pixel 6 (Android 14) FRP-related behavior, credited to Derek Morris. This page is non-operational and does not provide bypass steps or tooling.",
+    "url": "https://ddmcsr25.github.io/",
+    "keywords": "FRP security analysis, Pixel 6, Android 14, responsible disclosure, threat model, Derek Morris, issue 352333773"
+  }
+  </script>
 
-- **USB debugging is disabled**
-- **The bootloader is locked**
-- **FRP is active**
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; color: #333; background-color: #f9f9f9; }
+    h1, h2, h3 { color: #1a1a1a; }
+    a { color: #1a0dab; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: auto; background: #fff; padding: 22px; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; }
+    .callout { background: #f1f5ff; border-left: 5px solid #315efb; padding: 12px 14px; border-radius: 8px; }
+    .meta { color:#555; }
+    .footer { font-size: 0.9em; margin-top: 40px; color: #666; }
+    code { background: #eee; padding: 2px 4px; border-radius: 4px; }
+    ul { margin-top: 8px; }
+  </style>
+</head>
 
-Using legitimate tools such as **Pixel Flasher** and OTA sideloading, this bypass was successfully tested and submitted to Google through the Android Security Rewards (ASR) program.
+<body>
+  <div class="container">
+    <h1>Pixel 6 FRP Security Research — Public Attribution</h1>
 
----
+    <p class="meta">
+      <strong>Researcher:</strong> Derek Morris (ddmcsr25)<br>
+      <strong>Published:</strong> July 2024<br>
+      <strong>Focus:</strong> Factory Reset Protection (FRP) / device protection behavior and security impact analysis
+    </p>
 
-## Affected Devices
+    <div class="callout">
+      <strong>Important:</strong> This page is a <em>non-operational</em> security write-up for attribution and defensive awareness.
+      It does <strong>not</strong> include bypass instructions, step-by-step reproduction, tooling guidance, or exploit code.
+    </div>
 
-- **Device:** Pixel 6 (codename: oriole)  
-- **OS:** Android 14  
-- **Build Fingerprint:** `google/oriole/oriole:14/AP2A.240605.024/11860263:user/release-keys`  
-- **Exploit Method:** Physical access + ADB sideload with full OTA flashing  
+    <h2>Summary</h2>
+    <p>
+      I reported security research findings affecting Google Pixel 6 (Android 14) to Google through the Android &amp; Devices
+      Vulnerability Reward Program (VRP/ASR). Google acknowledged the report and issued a reward. This page exists to provide
+      a stable public reference that I was the submitting researcher.
+    </p>
 
----
+    <h2>Public Reference</h2>
+    <ul>
+      <li><strong>Issue Tracker ID:</strong> <a href="https://issuetracker.google.com/issues/352333773" target="_blank" rel="noopener">352333773</a></li>
+      <li><strong>Submitted by:</strong> Derek Morris</li>
+      <li><strong>Acknowledged:</strong> Yes</li>
+      <li><strong>Reward Issued:</strong> Yes</li>
+      <li><strong>Status:</strong> Marked as intended behavior / won’t fix (per Google’s triage)</li>
+    </ul>
 
-## Impact
+    <h2>Security Impact (High-Level)</h2>
+    <ul>
+      <li>Concerns the real-world risk when a device is in an ownership-verification/FRP context.</li>
+      <li>Highlights what an attacker with <strong>physical access</strong> could attempt under certain conditions.</li>
+      <li>Evaluates the behavior against a practical threat model and user-protection expectations.</li>
+    </ul>
 
-Attackers with physical access and basic knowledge of Android tools can:
+    <h2>Why “Intended Behavior” Can Still Matter</h2>
+    <p>
+      Some reports are classified as “intended behavior” because they fall within an accepted threat model or require
+      conditions (e.g., physical access) that the platform treats differently from remote exploitation. Even so, documenting
+      the risk helps users and defenders understand protections and residual gaps.
+    </p>
 
-- Completely bypass FRP and the user-set PIN/password
-- Install any firmware or custom ROM
-- Access all user data
-- Unlock the bootloader without authorization
-- Enroll the device into the Android Beta Program for persistent access
+    <h2>Defensive Guidance</h2>
+    <ul>
+      <li>Keep devices updated to the latest stable Android security patch level.</li>
+      <li>Use a strong device passcode and account security (2FA where possible).</li>
+      <li>For enterprises: consider MDM/enterprise device policies and inventory controls for devices at risk of loss/theft.</li>
+      <li>If you bought a used device: complete official ownership transfer steps and obtain proof of purchase.</li>
+    </ul>
 
----
+    <h2>Disclosure Timeline</h2>
+    <ul>
+      <li><strong>Reported to Google:</strong> July 10, 2024</li>
+      <li><strong>Program:</strong> Android &amp; Devices VRP / Android Security Rewards</li>
+      <li><strong>Issue Tracker:</strong> 352333773</li>
+    </ul>
 
-## Exploit Steps (Abbreviated)
+    <h2>Contact</h2>
+    <p>
+      If you need to verify attribution for publication, you can reference the issue ID above and my GitHub identity
+      (<code>ddmcsr25</code>).
+    </p>
 
-1. **Boot the Pixel 6 into recovery.**
-2. **Enable “Apply update from ADB.”**
-3. **Use Pixel Flasher with Android 15 Beta OTA image.**
-4. **Flash the device via sideload using Pixel Flasher.**
-5. **Bypass FRP & lock screen, and gain full access.**
+    <h2>Disclaimer</h2>
+    <p>
+      This content is provided for defensive security awareness and responsible disclosure attribution.
+      I do not provide instructions, tools, or methods intended to bypass device security or access devices without authorization.
+    </p>
 
-**Full step-by-step technical breakdown is available on the blog:**
-[Read the Blog Post](#)
-
----
-
-## Disclosure & Recognition
-
-- **Reported to:** Google Android Security Team  
-- **Issue Tracker:** FRP bypass vulnerability #352333773 (Google)  
-- **Rewarded via ASR:** (Proof on file – see attached PDF)  
-
----
-
-## Disclaimer
-
-This information is shared for educational purposes only and with responsible disclosure intent. **Do not use this exploit on devices you do not own or have explicit authorization to test.**
-
----
-
-## Help Recognize Ethical Research
-
-If you believe security researchers deserve acknowledgment for responsible disclosure:
-
-- ⭐ Star this repo  
-- 📢 Share the blog post  
-- 🏷️ Use hashtag `#FRPbypassPixel6`  
-
----
-
-## Related
-
-- [Bug Hunters - Android & Google Devices VRP Rules](https://bughunters.google.com/about/rules/6171833274204160/android-and-google-devices-security-reward-program-rules)
+    <div class="footer">
+      &copy; 2024 Derek Morris. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>
